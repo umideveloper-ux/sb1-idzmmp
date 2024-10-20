@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "schools": {
+      ".read": "auth != null",
+      "$schoolId": {
+        ".write": "auth != null && auth.token.email === data.child('email').val()",
+        "candidates": {
+          ".write": "auth != null && auth.token.email === root.child('schools').child($schoolId).child('email').val()"
+        }
+      }
+    },
+    "messages": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$messageId": {
+        ".validate": "newData.hasChildren(['schoolId', 'schoolName', 'content', 'timestamp'])",
+        "schoolId": {
+          ".validate": "newData.isNumber()"
+        },
+        "schoolName": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "content": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 500"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber() && newData.val() <= now"
+        }
+      }
+    }
+  }
+}
